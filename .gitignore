@@ -1,0 +1,5 @@
+Cosmo.iml
+.idea
+*.egg-info
+cosmo.db
+__pycache__
