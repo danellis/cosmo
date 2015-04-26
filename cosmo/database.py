@@ -57,3 +57,8 @@ class Database(object):
         cursor = self.db.cursor()
         cursor.executemany("INSERT INTO triples VALUES (?, ?, ?)", triples)
         self.db.commit()
+
+    def get_triples(self):
+        cursor = self.db.cursor()
+        cursor.execute("SELECT page_url, link_type, link_url FROM triples ORDER BY page_url, link_type")
+        return cursor.fetchall()
