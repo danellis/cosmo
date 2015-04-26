@@ -1,23 +1,25 @@
+import sys
 from urllib.parse import urlparse
 
 class Crawler(object):
-    def __init__(self, database, fetcher, analyzer):
+    def __init__(self, database, fetcher, analyzer, verbose=False):
         self.database = database
         self.fetcher = fetcher
         self.analyzer = analyzer
+        self.verbose = verbose
         self.queue = set()
 
     def crawl(self, url):
         if self.database.is_page_stored(url):
-            print("Page is already crawled. Use --flush to flush the database file.")
+            print("Page is already crawled. Use --flush to flush the database file.", file=sys.stderr)
         else:
             self.queue.add(url)
             while len(self.queue) > 0:
-                print("Queue size: {0}".format(len(self.queue)))
                 self.crawl_one(self.queue.pop())
 
     def crawl_one(self, url):
-        print("Crawling {0}".format(url))
+        if self.verbose:
+            print(url, file=sys.stderr)
         fetch_result = self.fetcher.fetch(url)
         if fetch_result is not None:
             (status, html) = fetch_result
