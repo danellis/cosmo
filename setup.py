@@ -13,7 +13,8 @@ setup(
     install_requires=[
         'docutils>=0.3',
         'docopt>=0.6.2',
-        'beautifulsoup4>=4.3.2'
+        'beautifulsoup4>=4.3.2',
+        'requests>=2.6.2'
     ],
 
     author="Dan Ellis",

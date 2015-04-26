@@ -1,12 +1,6 @@
-from urllib.request import urlopen
-from urllib.error import HTTPError, URLError
+import requests
 
 class Fetcher(object):
     def fetch(self, url):
-        try:
-            response = (200, urlopen(url).read())
-        except HTTPError as e:
-            response = (e.code, '')
-        except URLError:
-            response = None
-        return response
+        response = requests.get(url)
+        return response.status_code, response.text
