@@ -20,15 +20,21 @@ from cosmo.database import Database
 from cosmo.analyzer import Analyzer
 from cosmo.fetcher import Fetcher
 from cosmo.crawler import Crawler
+from cosmo.format.nice import NiceFormatter
+from cosmo.format.raw import RawFormatter
 from cosmo import exit_codes
 
 def main():
     # Process command line arguments
     arguments = docopt(__doc__, version=__version__)
     flush_db = arguments['--flush']
-    output_raw = arguments['--raw']
     base_url = arguments['<url>']
     db_filename = arguments['--database'] or './cosmo.db'
+
+    if arguments['--raw']:
+        formatter = RawFormatter()
+    else:
+        formatter = NiceFormatter()
 
     # Open a database file for storing triples
     try:
@@ -44,42 +50,16 @@ def main():
     try:
         # Start crawling from the supplied URL
         crawler.crawl(base_url)
-        print_triples(database, raw=output_raw)
+        formatter.print(database.get_triples())
     except KeyboardInterrupt:
         print("Crawl terminated.", file=sys.stderr)
-        print_triples(database, raw=output_raw)
+        formatter.print(database.get_triples())
         sys.exit(exit_codes.SUCCESS)
     except Exception as e:
         print("Error: {}".format(e), file=sys.stderr)
         sys.exit(exit_codes.ERROR)
     finally:
         database.close()
-
-
-def print_triples(database, raw=False):
-    triples = database.get_triples()
-
-    if raw:
-        print_raw_triples(triples)
-    else:
-        print_formatted_triples(triples)
-
-def print_raw_triples(triples):
-    for page_url, link_type, link_url in triples:
-        print("{} {} {}".format(page_url, link_type, link_url))
-
-def print_formatted_triples(triples):
-    previous_page_url = None
-    previous_link_type = None
-
-    for page_url, link_type, link_url in triples:
-        if page_url != previous_page_url:
-            print(page_url)
-            previous_page_url = page_url
-        if link_type != previous_link_type:
-            print("  Link type '{}':".format(link_type))
-            previous_link_type = link_type
-        print("    {}".format(link_url))
 
 if __name__ == '__main__':
     main()
