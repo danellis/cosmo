@@ -48,9 +48,13 @@ def main():
     except KeyboardInterrupt:
         print("Crawl terminated.", file=sys.stderr)
         print_triples(database, raw=output_raw)
+        sys.exit(exit_codes.SUCCESS)
+    except Exception as e:
+        print("Error: {}".format(e), file=sys.stderr)
+        sys.exit(exit_codes.ERROR)
     finally:
-        # On completion, error or ^C, commit and close the DB cleanly
         database.close()
+
 
 def print_triples(database, raw=False):
     triples = database.get_triples()

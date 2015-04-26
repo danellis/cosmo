@@ -1,1 +1,3 @@
+SUCCESS = 0
 DATABASE = 1
+ERROR = 2
