@@ -1,9 +1,6 @@
 import sqlite3
 
 class Database(object):
-    page_link_type = "page"
-    image_link_type = "image"
-
     def __init__(self, db_filename, flush=False):
         """Initialize the database file, creating tables and indices as necessary.
 
