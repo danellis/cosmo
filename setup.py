@@ -17,6 +17,12 @@ setup(
         'requests>=2.6.2'
     ],
 
+    tests_require=[
+        'nose'
+    ],
+
+    test_suite='nose.collector',
+
     author="Dan Ellis",
     author_email='dan@danellis.me',
     description="Web crawler",

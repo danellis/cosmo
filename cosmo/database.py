@@ -27,8 +27,12 @@ class Database(object):
         """)
         self.db.commit()
         if flush:
-            cursor.execute("DELETE FROM triples")
-            self.db.commit()
+            self.flush()
+
+    def flush(self):
+        cursor = self.db.cursor()
+        cursor.execute("DELETE FROM triples")
+        self.db.commit()
 
     def close(self):
         """Commit any outstanding inserts and then close cleanly

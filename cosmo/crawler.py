@@ -20,20 +20,21 @@ class Crawler(object):
     def crawl_one(self, url):
         if self.verbose:
             print(url, file=sys.stderr)
-        fetch_result = self.fetcher.fetch(url)
-        if fetch_result is not None:
-            (status, html) = fetch_result
-            triples = self.analyzer.analyze(url, html)
-            self.database.store_triples(triples)
-            for page_url, link_type, link_url in triples:
-                if self.should_crawl(page_url, link_type, link_url):
-                    self.queue.add(link_url)
+        status, html = self.fetcher.fetch(url)
+        triples = self.analyzer.analyze(url, html)
+        self.database.store_triples(triples)
+        for page_url, link_type, link_url in triples:
+            if self.should_crawl(page_url, link_type, link_url):
+                self.queue.add(link_url)
 
     def should_crawl(self, page_url, link_type, link_url):
+        if link_type != 'page':
+            return False
+
         if not self.have_same_domain(page_url, link_url):
             return False
 
-        if link_type == 'page' and self.database.is_page_stored(link_url):
+        if self.database.is_page_stored(link_url):
             return False
 
         return True
