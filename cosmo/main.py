@@ -18,10 +18,10 @@ Output formats:
   raw       Raw triples
   dot       GraphViz DOT format graph
 """
-__version__ = '0.0.1'
 
 import sys
 from docopt import docopt
+from cosmo.version import version
 from cosmo.database import Database
 from cosmo.analyzer import Analyzer
 from cosmo.fetcher import Fetcher
@@ -31,7 +31,7 @@ from cosmo import exit_codes
 
 def main():
     # Process command line arguments
-    arguments = docopt(__doc__, version=__version__)
+    arguments = docopt(__doc__, version=version)
     verbose = arguments['--verbose']
     flush_db = arguments['--flush']
     base_url = arguments['<url>']

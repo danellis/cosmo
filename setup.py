@@ -1,5 +1,5 @@
 from setuptools import setup, find_packages
-from cosmo.main import __version__ as version
+from cosmo.version import version
 
 setup(
     name="Cosmo",
