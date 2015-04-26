@@ -1,22 +1,26 @@
-from collections import deque
-
 class Crawler(object):
-    def __init__(self, fetcher, analyzer):
+    def __init__(self, database, fetcher, analyzer):
+        self.database = database
         self.fetcher = fetcher
         self.analyzer = analyzer
-        self.queue = deque()
+        self.queue = set()
 
     def crawl(self, url):
-        self.queue.append(url)
-        while len(self.queue) > 0:
-            print("Queue size: {0}".format(len(self.queue)))
-            self.crawl_one(self.queue.popleft())
+        if self.database.is_page_stored(url):
+            print("Page is already crawled. Use --flush to flush the database file.")
+        else:
+            self.queue.add(url)
+            while len(self.queue) > 0:
+                print("Queue size: {0}".format(len(self.queue)))
+                self.crawl_one(self.queue.pop())
 
     def crawl_one(self, url):
         print("Crawling {0}".format(url))
         fetch_result = self.fetcher.fetch(url)
         if fetch_result is not None:
             (status, html) = fetch_result
-            links = self.analyzer.analyze(url, html)
-            for link in links:
-                self.queue.append(link)
+            triples = self.analyzer.analyze(url, html)
+            self.database.store_triples(triples)
+            for _, link_type, link_url in triples:
+                if link_type == 'page' and not self.database.is_page_stored(link_url):
+                    self.queue.add(link_url)
