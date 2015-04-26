@@ -10,21 +10,22 @@ as (page URL, link type, link URL) triples. The link types are `page` and
 * have the same scheme, host and port as the page it was found on
 * be permitted by robots.txt
 
+```
+Usage:
+  cosmo [options] <url>
+  cosmo -h|--help
+  cosmo --version
 
-    Usage:
-      cosmo [options] <url>
-      cosmo -h|--help
-      cosmo --version
+Options:
+  -h --help               Show this screen.
+  --version               Show version.
+  -v --verbose            Output each URL on stderr as it is fetched.
+  -d --database=<file>    Database file.
+  -F --flush              Flush the database before crawling.
+  -f --format=<format>    Select output format (see below).
 
-    Options:
-      -h --help               Show this screen.
-      --version               Show version.
-      -v --verbose            Output each URL on stderr as it is fetched.
-      -d --database=<file>    Database file.
-      -F --flush              Flush the database before crawling.
-      -f --format=<format>    Select output format (see below).
-
-    Output formats:
-      nice      Hierarchical by page URL and link type
-      raw       Raw triples
-      dot       GraphViz DOT format graph
+Output formats:
+  nice      Hierarchical by page URL and link type
+  raw       Raw triples
+  dot       GraphViz DOT format graph
+```
