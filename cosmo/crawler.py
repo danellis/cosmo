@@ -1,3 +1,5 @@
+from urllib.parse import urlparse
+
 class Crawler(object):
     def __init__(self, database, fetcher, analyzer):
         self.database = database
@@ -21,6 +23,20 @@ class Crawler(object):
             (status, html) = fetch_result
             triples = self.analyzer.analyze(url, html)
             self.database.store_triples(triples)
-            for _, link_type, link_url in triples:
-                if link_type == 'page' and not self.database.is_page_stored(link_url):
+            for page_url, link_type, link_url in triples:
+                if self.should_crawl(page_url, link_type, link_url):
                     self.queue.add(link_url)
+
+    def should_crawl(self, page_url, link_type, link_url):
+        if not self.have_same_domain(page_url, link_url):
+            return False
+
+        if link_type == 'page' and self.database.is_page_stored(link_url):
+            return False
+
+        return True
+
+    def have_same_domain(self, url1, url2):
+        parsed1 = urlparse(url1)
+        parsed2 = urlparse(url2)
+        return (parsed1.scheme, parsed1.netloc) == (parsed2.scheme, parsed2.netloc)
