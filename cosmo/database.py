@@ -1,6 +1,8 @@
 import sqlite3
 
 class Database(object):
+    """Data access layer for storing and retrieving triples to/from SQLite database."""
+
     def __init__(self, db_filename, flush=False):
         """Initialize the database file, creating tables and indices as necessary.
 
@@ -27,6 +29,10 @@ class Database(object):
             self.flush()
 
     def flush(self):
+        """Flush stored triples from the database.
+
+        :returns: None
+        """
         cursor = self.db.cursor()
         cursor.execute("DELETE FROM triples")
         self.db.commit()
@@ -60,6 +66,10 @@ class Database(object):
         self.db.commit()
 
     def get_triples(self):
+        """Retrieve all (page URL, link type, link URL) triples from the database
+
+        :returns: Iterable of (page URL, link type, link URL) tuples
+        """
         cursor = self.db.cursor()
         cursor.execute("SELECT page_url, link_type, link_url FROM triples ORDER BY page_url, link_type")
         return cursor.fetchall()
