@@ -7,7 +7,7 @@ as (page URL, link type, link URL) triples. The link types are `page` and
 
 * be of type 'page' (i.e. from the `href` of an `a` element)
 * not have been crawled already
-* have the same scheme, host and port as the page it was found on
+* have the same host and port as the page it was found on
 * be permitted by robots.txt
 
 ```

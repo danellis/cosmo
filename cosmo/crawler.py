@@ -53,9 +53,7 @@ class Crawler(object):
         return True
 
     def have_same_domain(self, url1, url2):
-        parsed1 = urlparse(url1)
-        parsed2 = urlparse(url2)
-        return (parsed1.scheme, parsed1.netloc) == (parsed2.scheme, parsed2.netloc)
+        return urlparse(url1).netloc == urlparse(url2).netloc
 
     def load_robots_file(self, url):
         """Load the /robots.txt file for the given URL by reusing the scheme
