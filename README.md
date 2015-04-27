@@ -4,10 +4,11 @@
 
 This is just a small, incomplete web crawler written as a coding test. Given a
 starting URL, it will store link and image URLs per page in an SQLite database
-as (page URL, link type, link URL) triples. The link types are `page` and
-`image`. For a gathered link to be valid for crawling, it must:
+as (page URL, link type, link URL) triples. The link types are `page`, `image`,
+`stylesheet`, `script`, `object`, `embed`, `iframe`, `media` and `form`. For a
+gathered link to be valid for crawling, it must:
 
-* be of type 'page' (i.e. from the `href` of an `a` element)
+* be of type `page` or `iframe`
 * not have been crawled already
 * have the same host and port as the page it was found on
 * be permitted by robots.txt
