@@ -1,5 +1,7 @@
 # Cosmo
 
+***You have to run before you can crawl***
+
 This is just a small, incomplete web crawler written as a coding test. Given a
 starting URL, it will store link and image URLs per page in an SQLite database
 as (page URL, link type, link URL) triples. The link types are `page` and
