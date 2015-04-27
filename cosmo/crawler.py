@@ -1,8 +1,6 @@
 import sys
 from urllib.parse import urlparse, urlunparse
 from urllib.robotparser import RobotFileParser
-import requests
-from cosmo.version import version
 
 class Crawler(object):
     def __init__(self, database, fetcher, analyzer, verbose=False):
@@ -110,10 +108,10 @@ class Crawler(object):
         # to specify the User-Agent header. I noticed on a CloudFlare-fronted
         # site that it returns a 403 for /robots.txt if the the user agent is
         # Python-urllib, but 200 if it's Cosmo.
-        response = requests.get(robots_url, headers={'User-Agent': 'Cosmo/{}'.format(version)})
-        if response.status_code in (401, 403):
+        status, robots_file = self.fetcher.fetch(robots_url)
+        if status in (401, 403):
             self.robot_parser.disallow_all = True
-        elif response.status_code >= 400:
+        elif status >= 400:
             self.robot_parser.allow_all = True
         else:
-            self.robot_parser.parse(response.text)
+            self.robot_parser.parse(robots_file.splitlines())
