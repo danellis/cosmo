@@ -36,6 +36,5 @@ Output formats:
 
 * There's no throttling
 * Pages that fail to be retrieved are not retried
-* Currently, only `a` and `img` elements are searched; other candidates include `link`, `object`, `embed` and `script`
 * Only HTML files are parsed, but it would be useful to parse CSS files too
 * It's not at all concurrent

@@ -67,8 +67,8 @@ class Crawler(object):
         :param link_url: The link URL to test.
         :returns: True if the link URL should be crawled, otherwise False.
         """
-        # Only linked pages should be crawled, not images
-        if link_type != 'page':
+        # Only HTML pages should be crawled, not other media
+        if link_type not in ('page', 'iframe'):
             return False
 
         # The link should be on the same domain as the page it's linked from

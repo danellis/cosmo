@@ -1,8 +1,20 @@
-from itertools import chain
 from urllib.parse import urljoin
 from bs4 import BeautifulSoup
 
 class Analyzer(object):
+    link_types = [
+        # (link type, element, match attributes, extract attribute)
+        ('page', 'a', {}, 'href'),
+        ('image', 'img', {}, 'src'),
+        ('stylesheet', 'link', {'rel': 'stylesheet'}, 'href'),
+        ('script', 'script', {}, 'src'),
+        ('object', 'object', {}, 'data'),
+        ('embed', 'embed', {}, 'src'),
+        ('iframe', 'iframe', {}, 'src'),
+        ('media', 'source', {}, 'src'),
+        ('form', 'form', {}, 'action')
+    ]
+
     def analyze(self, page_url, html):
         """Parse an HTML page and extract URLs from the links and images.
 
@@ -12,29 +24,28 @@ class Analyzer(object):
         """
         soup = BeautifulSoup(html)
 
-        # Currently only `a` and `img` elements are used
-        page_links = filter(None, map(self.map_tag(page_url, 'href'), soup.find_all('a')))
-        image_links = filter(None, map(self.map_tag(page_url, 'src'), soup.find_all('img')))
+        triples = []
+        for link_type, element_name, attrs, attribute_name in self.link_types:
+            triples.extend(
+                [
+                    (page_url, link_type, self.extract_link(page_url, element, attribute_name))
+                    for element
+                    in soup.find_all(element_name, attrs=attrs)
+                ]
+            )
 
-        triples = chain(
-            [(page_url, 'page', link_url) for link_url in page_links],
-            [(page_url, 'image', link_url) for link_url in image_links]
-        )
+        return list(filter(lambda t: t[2] is not None, triples))
 
-        # The list might be iterated over multiple times, so return it as a list
-        return list(triples)
+    def extract_link(self, page_url, element, attribute_name):
+        """Return an absolute URL based on a base URL and a possibly relative one.
 
-    def map_tag(self, page_url, url_attr):
-        """Return a function that gets a URL the given attribute of an element.
-
-        :param page_url: The URL of the page for making relative links absolute
-        :param url_attr: The attribute to extract the URL from
-        :returns: A function to map an element to a URL
+        :param page_url: URL of the page containing the link
+        :param element: HTML element
+        :param attribute_name: Attribute to extract the link from
+        :returns: An absolute URL
         """
-        def _map_tag(tag):
-            url = tag.attrs.get(url_attr, None)
-            if url is None:
-                return None
-            else:
-                return urljoin(page_url, url, allow_fragments=False)
-        return _map_tag
+        attribute = element.attrs.get(attribute_name, None)
+        if attribute is None:
+            return None
+
+        return urljoin(page_url, attribute, allow_fragments=False)
