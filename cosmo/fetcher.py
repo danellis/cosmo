@@ -7,5 +7,8 @@ class Fetcher(object):
     }
 
     def fetch(self, url):
-        response = requests.get(url, headers=self.headers)
-        return response.status_code, response.text
+        try:
+            response = requests.get(url, headers=self.headers)
+            return response.status_code, response.text
+        except requests.RequestException:
+            return None

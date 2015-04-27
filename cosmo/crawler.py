@@ -26,12 +26,16 @@ class Crawler(object):
     def crawl_one(self, url):
         if self.verbose:
             print(url, file=sys.stderr)
-        status, html = self.fetcher.fetch(url)
-        triples = self.analyzer.analyze(url, html)
-        self.database.store_triples(triples)
-        for page_url, link_type, link_url in triples:
-            if self.should_crawl(page_url, link_type, link_url):
-                self.queue.add(link_url)
+        response = self.fetcher.fetch(url)
+        if response is None:
+            print("Failed to get {}".format(url), file=sys.stderr)
+        else:
+            status, html = response
+            triples = self.analyzer.analyze(url, html)
+            self.database.store_triples(triples)
+            for page_url, link_type, link_url in triples:
+                if self.should_crawl(page_url, link_type, link_url):
+                    self.queue.add(link_url)
 
     def should_crawl(self, page_url, link_type, link_url):
         if link_type != 'page':

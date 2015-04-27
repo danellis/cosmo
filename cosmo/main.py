@@ -59,9 +59,6 @@ def main():
         print("Crawl terminated.", file=sys.stderr)
         formatter.print(database.get_triples())
         sys.exit(exit_codes.SUCCESS)
-    except Exception as e:
-        print("Error: {}".format(e), file=sys.stderr)
-        sys.exit(exit_codes.ERROR)
     finally:
         database.close()
 
