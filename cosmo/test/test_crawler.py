@@ -4,6 +4,7 @@ from cosmo.crawler import Crawler
 class CrawlerTest(unittest.TestCase):
     def setUp(self):
         self.crawler = Crawler(MockDatabase(), MockFetcher(), MockAnalyzer())
+        self.crawler.robot_parser.allow_all = True
         self.crawler.crawl_one('http://example.com/start')
 
     def test(self):
@@ -17,6 +18,7 @@ class CrawlerTest(unittest.TestCase):
 class LinkTypeTest(unittest.TestCase):
     def setUp(self):
         self.crawler = Crawler(MockDatabase(), MockFetcher(), MockAnalyzer())
+        self.crawler.robot_parser.allow_all = True
 
     def test(self):
         self.assertTrue(self.crawler.should_crawl('http://example.com/start', 'page', 'http://example.com/foo'))
@@ -26,6 +28,7 @@ class LinkTypeTest(unittest.TestCase):
 class SameDomainTest(unittest.TestCase):
     def setUp(self):
         self.crawler = Crawler(MockDatabase(), MockFetcher(), MockAnalyzer())
+        self.crawler.robot_parser.allow_all = True
 
     def test(self):
         self.assertTrue(self.crawler.should_crawl('http://example.com/start', 'page', 'http://example.com/foo'))
@@ -37,6 +40,7 @@ class AlreadyCrawledTest(unittest.TestCase):
     def setUp(self):
         database = MockDatabase()
         self.crawler = Crawler(database, MockFetcher(), MockAnalyzer())
+        self.crawler.robot_parser.allow_all = True
         database.store_triples([('http://example.com/foo', 'page', 'http://example.com/bar')])
 
     def test(self):
